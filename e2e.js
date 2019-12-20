@@ -4,7 +4,8 @@ function createWebSocketNotificationChannel() {
     xhttp.onreadystatechange = function() {
             if (this.readyState == XMLHttpRequest.DONE) {
                 if(this.status == 200 || this.status == 201) {
-                    EventLog(this.status + " " + this.statusText + " " + this.responseText);
+                    EventLog(this.status + " " + this.statusText + " ");
+                    EventLog("WebSocket notification channel registered.");
                 } else {
                     EventLogError(this.status + " " + this.statusText);
                 }
@@ -15,79 +16,72 @@ function createWebSocketNotificationChannel() {
     xhttp.send();
 }
 
-function webSocketTest() {   
+function connectWebSocket() {   
     // Check if the browser supports WebSocket
     if ("WebSocket" in window) {  
         // Let us open a web socket
         var ws = new WebSocket("wss://api.us-east-1.mbedcloud.com/v2/notification/websocket-connect", ["wss", "pelion_" + getApiKey()]);
         
-        ws.onopen = function(event){
-                EventLog("WebSocket opened");
-            };
+        ws.onopen = function(event) {
+            EventLog("WebSocket opened");
+        };
 
-            ws.onmessage = function(event) {
-                var json = JSON.parse(event.data);
+        ws.onmessage = function(event) {
+            var json = JSON.parse(event.data);
+            EventLog("Message received on notification channel.");
+            NotificationChannelLog(JSON.stringify(json));
 
-                EventLog("Message received on notification channel.");
-                
-                NotificationChannelLog(JSON.stringify(json));
+            // Note that if property name contains hyphen, you have to use bracket notation.
+            // About bracket notation, see this page:
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors
 
-                // Note that if property name contains hyphen, you have to use bracket notation.
-                // About bracket notation, see this page:
-                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors
-
-                // Handles notifications
-                if(json.notifications != undefined) {
-                    for (i = 0; i < json.notifications.length; i++) {
-                        var ntf = json.notifications[i];
-                        var dec = window.atob(ntf.payload);
-                        DeviceDataEventsLog( "Endpoint:" + ntf.ep + " Path:" + ntf.path + " Payload:" + dec );
-                    }
-                } 
-
-                // Handles registration
-                if(json.registrations != undefined) {
-                    for (i=0; i < json.registrations.length; i++) {
-                        EventLog("Registration message received.");
-                    }
+            // Handles notifications
+            if(json.notifications != undefined) {
+                for (i = 0; i < json.notifications.length; i++) {
+                    var ntf = json.notifications[i];
+                    var dec = window.atob(ntf.payload);
+                    DeviceDataEventsLog( "Endpoint:" + ntf.ep + " Path:" + ntf.path + " Payload:" + dec );
                 }
-
-                // Handles registrations udpate
-                if(json['reg-updates'] != undefined) {
-                    for (i=0; i < json['reg-updates'].length; i++) {
-                        EventLog("Registration update message received.");
-                    }
+            } 
+            // Handles registration
+            if(json.registrations != undefined) {
+                for (i=0; i < json.registrations.length; i++) {
+                    EventLog("Registration message received.");
                 }
-
-                // Handles de-registrations
-                if(json['de-registrations'] != undefined) {
-                    for (i=0; i < json['de-registrations'].length; i++) {
-                        EventLog("De-registration message received.");
-                    }
+            }
+            // Handles registrations udpate
+            if(json['reg-updates'] != undefined) {
+                for (i=0; i < json['reg-updates'].length; i++) {
+                    EventLog("Registration update message received.");
                 }
-
-                // Handles registrations expired
-                if(json['registrations-expired'] != undefined) {
-                    for (i=0; i < json['registrations-expired'].length; i++) {
-                        EventLog("Registration expired message received.");
-                    }    
+            }
+            // Handles de-registrations
+            if(json['de-registrations'] != undefined) {
+                for (i=0; i < json['de-registrations'].length; i++) {
+                    EventLog("De-registration message received.");
                 }
-
-                // Handles async responses
-                if(json['async-responses'] != undefined) {
-                    for (i=0; i < json['async-responses'].length; i++) {
-                        EventLog("Async response message received.");
-                    }
+            }
+            // Handles registrations expired
+            if(json['registrations-expired'] != undefined) {
+                for (i=0; i < json['registrations-expired'].length; i++) {
+                    EventLog("Registration expired message received.");
+                }    
+            }
+            // Handles async responses
+            if(json['async-responses'] != undefined) {
+                for (i=0; i < json['async-responses'].length; i++) {
+                    EventLog("Async response message received.");
                 }
-            };
+            }
+        };
 
-            ws.onerror = function(err) {
-                EventLogError("Websocket notification channel error occurred");
-            };
+        ws.onerror = function(err) {
+            EventLogError("Websocket notification channel error occurred");
+        };
 
-            ws.onclose = function(event) {
-                EventLog("WebSocket closed");
-            };
+        ws.onclose = function(event) {
+            EventLog("WebSocket closed");
+        };
     } else {
         // The browser doesn't support WebSocket
         alert("WebSocket NOT supported by your Browser!");
@@ -99,7 +93,6 @@ function getRegisteredDevices() {
     xhttp.onreadystatechange = function() {
         if (this.readyState === XMLHttpRequest.DONE) {
             if(this.status === 200) {
-                EventLog(this.status + " " + this.statusText + " " + this.responseText);
                 let json = JSON.parse(this.responseText);
                 let selector = document.getElementById("deviceSelector");
                 // clear all options
@@ -107,9 +100,10 @@ function getRegisteredDevices() {
                 for(i=0; i < json.data.length; i++) {
                     let device = json.data[i];
                     selector.innerHTML += '<option value="' + device.id + '">' + device.id + '</option>';
+                    EventLog("Device found: " + device.id);
                 }
             } else {
-                // TODO: error handling
+                EventLogError("Unable to get registered device.");
             }
         }
     };
@@ -187,6 +181,77 @@ function unsubscribeResource( deviceId, resourcePath) {
     xhttp.open("DELETE", "https://api.us-east-1.mbedcloud.com/v2/subscriptions/" + deviceId + resourcePath, true);
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
     xhttp.send();
+}
+
+function presubscribe( deviceId, resourcePath) {
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if(this.readyState == XMLHttpRequest.DONE) {
+            if(this.status == 204) { // 204 Successfully created.
+                EventLog(this.status + " " + this.statusText);
+            } else {
+                EventLogError(this.status + " " + this.statusText);
+            }
+        }
+    };
+    xhttp.open("PUT", "https://api.us-east-1.mbedcloud.com/v2/subscriptions", true);
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    xhttp.setRequestHeader('Content-type', 'application/json');
+    // Create post data
+    let postdata = '[{"endpoint-name":"' + deviceId + '","resource-path":"' + resourcePath + '"}]';
+    xhttp.send(postdata);
+}
+
+function unpresubscribe() {
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if(this.readyState == XMLHttpRequest.DONE) {
+            if(this.status == 204) { // 204 Successfully created.
+                EventLog(this.status + " " + this.statusText);
+            } else {
+                EventLogError(this.status + " " + this.statusText + " " + this.responseText);
+            }
+        }
+    };
+    xhttp.open("PUT", "https://api.us-east-1.mbedcloud.com/v2/subscriptions", true);
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    xhttp.send();
+}
+
+function setFilterParameter( deviceId, resourcePath, param) {
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if(this.readyState == XMLHttpRequest.DONE) {
+            if(this.status == 202) { // 202 Accepted
+                EventLog(this.status + " " + this.statusText);
+            } else {
+                EventLogError(this.status + " " + this.statusText);
+            }
+        }
+    };
+    xhttp.open("POST", "https://api.us-east-1.mbedcloud.com/v2/device-requests/" + deviceId + "?async-id=" + create_UUID(), true);
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    xhttp.setRequestHeader('Content-type', 'application/json');
+    // Create post data
+    let postdata = '{"method":"PUT","uri":"' + resourcePath + '?' + param + '"}';
+    xhttp.send(postdata);
+}
+
+function deleteWebSocketNotificationChannel() {
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if(this.readyState == XMLHttpRequest.DONE) {
+            if(this.status == 204) { // 204 Successfully created.
+                EventLog(this.status + " " + this.statusText);
+            } else {
+                EventLogError(this.status + " " + this.statusText + " ");
+            }
+        }
+    };
+    xhttp.open("DELETE", "https://api.us-east-1.mbedcloud.com/v2/notification/websocket", true);
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    xhttp.send();
+
 }
 
 function getDeviceId() {

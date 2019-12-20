@@ -44,7 +44,7 @@
             <p>
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#registerWebsocket">API Doc: websocket notification channel.</a>
                 <div>
-                    <button type="button" onclick="webSocketTest()"> Open WebSocket to the channel</button>
+                    <button type="button" onclick="connectWebSocket()"> Open WebSocket to the channel</button>
                 </div>
             </p>
             <p>
@@ -135,18 +135,51 @@
                 for details of presubscription.
             </p>
             <p>
-                Let's presubscribe to Digital Input Counter /3200/0/5501. This case, any device which has Digital Input Counter /3200/0/5501 resource will be subscribed automatically when device registers or does register update.
+                Let's presubscribe to Digital Input Counter /3200/0/5501. 
+                To presubscribe, use <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#updatePreSubscriptions">PUT /v2/subscriptions</a>.
+                This case, any device which has Digital Input Counter /3200/0/5501 resource will be subscribed automatically
+                when device registers or does register update.
+                <div>
+                    <button type="button" onClick="presubscribe( getDeviceId(), '/3200/0/5501')">Presubscribe /3200/0/5501 on the selected device</button>
+                </div>
+            </p>
+            <p>
+                Try to reboot your device. The resource /3200/0/5501 will be subscribed automatically and you'll see notification on your notification channel.
+            </p>
+            <p>
+                To unsubscribe presubscription, use <a href="">DELETE /v2/subscriptions</a>.
+                <div>
+                    <button type="button" onClick="unpresubscribe()">Unsubscribe presubscription</button>
+                </div>
             </p>
 
             <h2>Set notification rules for a resource</h2>
             <p>
-                The pre-subscribes are communicated to the device in register-update. To speedup the flow, boot your device and we will get the subscriptions to the device immediately
+                The web application can set a rule-based subscription to an Object, an Object Instance or a Resource.
             </p>
             <p>
-                After the device boot
-                Now press the button from the board and you will receive event from resource "/3200/0/5501" being incremented
+                The device updates Digital Input Counter /3200/0/5501 every 5 seconds and is reported to Pelion Device Management.
+                However, your webapp may need data only every 1 minutes and not want to receive redundant data.
+                In this case, you can use  the notification rule pmin, which sets minimum report period.
+                Details for notification rules, see 
+                <a href="https://www.pelion.com/docs/device-management/current/connecting/resource-change-webapp.html#notification-rules">this page</a>.
             </p>
-        
+            <p>
+                To set pmin 1 minute to your subscription to Digital Input Counter /3200/0/5501, set tMin with 
+                <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#createAsyncRequest">POST /v2/device-request</a>.
+                Specify the resource path in uri field with pmin=60 parameter. This is done in the script. 
+                <div>
+                    <button type="button" onClick="setFilterParameter( getDeviceId(), '/3200/0/5501', 'pmin=60')">Set pmin=60 to /3200/0/5501 on the selected device</button>
+                </div>
+            </p>
+            
+            <h2>Delete WebSocket notification channel</h2>
+            <p>
+                In the end, delete the WebSocket notification channel bound to the API key. This is required to change the channel from websocket to another type.
+                <div>
+                    <button type="button" onClick="deleteWebSocketNotificationChannel()">Delete WebSocket notification channel</button>
+                </div>
+            </p>
         </div>
 
         <div id="logs">
