@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+		<link rel="stylesheet" type="text/css" href="e2e.css">		
+    </head>
+   
+    <body>
+		<script src="./e2e.js" type="text/javascript">
+		</script>
+
+
+		<div id="main">
+			<img id="logo" src="image/Logo_ArmPelion_White.bc9f68a5a605.svg"/>
+
+			<h1>Device Communication with Pelion Device Management Service API</h1>
+
+			<h2>API key</h2>
+			<p>
+				Please input your API key here. (API key starts from ak_...)
+				<div>
+					<input id="apikey" type="text" size="80" value="" />
+				</div>
+			</p>
+
+			<h2>Open event notification channel and receive event from device</h2>
+			<p>
+				To open the WebSocket channel, follow these steps. Detailed description on this flow is
+				<a href="https://www.pelion.com/docs/device-management/current/integrate-web-app/event-notification.html#websocket-interface">here</a>.
+				Note that you can open only 1 notification channel per API key.
+			</p>
+
+			<h3>Create WebSocket notification channel</h3>
+			<p>
+				First we will need to open a <a href="https://www.pelion.com/docs/device-management/current/integrate-web-app/event-notification.html">Event notification channel.</a>
+				Click this button to create a WebSocket notification channel with 
+				<a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#registerWebsocket">PUT /v2/notification/websocket</a>.
+				<div>
+					<button type="button" onclick="createWebSocketNotificationChannel()"> Create websocket notification channel</button>
+				</div>
+			</p>
+			
+			<h3>Connect WebSocket notification channel</h3>
+			<p>
+				<a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#registerWebsocket">API Doc: websocket notification channel.</a>
+				<div>
+					<button type="button" onclick="webSocketTest()"> Open WebSocket to the channel</button>
+				</div>
+			</p>
+			<p>
+				Now you have a event notification channel open. You will receive the device lifitime events (Register, Register-Update and Expire) by default.
+			</p>
+
+			<h2>Connect your device</h2>
+			<p>
+				Connect device  to the system plaplapla.
+				You should see <b>reqistration</b> or <b>reg-update</b> event in the <b>Events Log</b> below.
+			</p>
+			<h3>Choose your device</h3>
+			<p>
+				<div>
+					<button type="button" onclick="getRegisteredDevices()">Get Registered Devices</button><br />
+					<select id="deviceSelector">
+						<option value="00000000000000000000000000000000">Click the button above to get registered devices</option>
+					</select>
+				</div>
+			</p>
+
+			<h2>Write resource to device</h2>
+			<p>
+				Send a resource update request to a device with 
+				<a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#createAsyncRequest">POST /v2/device-requests</a>.
+				For detail flow, see <a href="https://www.pelion.com/docs/device-management/current/connecting/handle-resource-webapp.html#the-write-operation">the Write operation</a>.
+			</p>
+			<p>
+				With Write request you can configure the device. The example application blinks a LED, let's configure new blink pattern by writing it in "pattern_resource" /3201/0/5853.
+				The default value of this resource is "500:500:500:500". We change this to "500:1000:500:1000". This value must be encoded into Base64, which is done in our script.
+				<div>
+					Pattern: <input id="blinkPattern" type="text" size="30" value="500:1000:500:1000" /><br />
+					<button type="button" onClick="writeResource( getDeviceId(), '/3201/0/5853', document.getElementById('blinkPattern').value)">Write resource to "pattern_resource" (/3201/0/5853)</button>
+				</div>
+			</p>
+			<p>
+				You'll get an async-response on your notification channel when the device accepted the request. In addition, the user LED on the device will blink with the specified pattern, 500 ms, 1000 ms, 500 ms, 1000 ms.
+			</p>
+			
+			<h2>Read resource from device</h2>
+			<p>
+				Send a resource read request to a device with 
+				<a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#createAsyncRequest">POST /v2/device-requests</a>.
+				For detail flow, see <a href="https://www.pelion.com/docs/device-management/current/connecting/handle-resource-webapp.html#the-read-operation">the Read operation</a>.
+			</p>
+			<p>
+				For example, let's read resource Digital Input Counter /3200/0/5501.
+				<div>
+					<button type="button" onClick="readResource( getDeviceId(), '/3200/0/5501')">Read resource Digital Input Counter (/3200/0/5501)</button>
+				</div>
+			</p>
+			<h3>Note for cache</h3>
+			<p>
+				If max-age value is set by the device's client, reported values from the device is cached for max-age:
+				<a href="https://www.pelion.com/docs/device-management/current/connecting/device-guidelines.html#resource-cache">https://www.pelion.com/docs/device-management/current/connecting/device-guidelines.html#resource-cache</a>
+				If the cached value is valid, it will be returned as the response. If your webapp needs to get the current value from the device, not cached value, max-age must be set 0 (default is 0) at the client.
+			</p>
+
+			<h2>Subscribe resource</h2>
+			<p>
+				Subscribe to a resource on a device with 
+				<a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#addResourceSubscription">PUT /v2/subscription/{device-id}/{resourcePath}</a>.
+			</p>
+			<p>
+				For example, let's subscribe Digital Input Counter /3200/0/5501 resource.
+				<div>
+					<button type="button" onClick="subscribeResource( getDeviceId(), '/3200/0/5501')">Subscribe to Digital Input Counter (/3200/0/5501)</button>
+				</div>
+				You will receive an async response and followed by notifications for resource change. 
+			</p>
+			<p>
+				To stop subscribing to the resource, use 
+				<a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#deleteResourceSubscription">DELETE /v2/subscriptions/{device-id}/{resourcePath}</a>.
+				<div>
+					<button type="button" onClick="unsubscribeResource( getDeviceId(), '/3200/0/5501')">Unsubscribe to Digital Input Counter (/3200/0/5501)</button>
+				</div>
+			</p>
+
+			<h2>Presubscribe resource</h2>
+			<p>
+				Presubscribe to a resource with <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#updatePreSubscriptions">PUT /v2/subscriptions</a>.
+			</p>
+			<p>
+				A presubscription automatically subscribes to Resources based on given rules. 
+				When a device with Resources match the set rules, the Device management Connect service sends a subscription (observe) request to the device on behalf of your application.
+				See 
+				<a href="https://www.pelion.com/docs/device-management/current/connecting/resource-change-webapp.html#presubscriptions">this online document</a>
+				for details of presubscription.
+			</p>
+			<p>
+				Let's presubscribe to Digital Input Counter /3200/0/5501. This case, any device which has Digital Input Counter /3200/0/5501 resource will be subscribed automatically when device registers or does register update.
+			</p>
+
+			<h2>Set notification rules for a resource</h2>
+			<p>
+				The pre-subscribes are communicated to the device in register-update. To speedup the flow, boot your device and we will get the subscriptions to the device immediately
+			</p>
+			<p>
+				After the device boot
+				Now press the button from the board and you will receive event from resource "/3200/0/5501" being incremented
+			</p>
+		
+		</div>
+
+		<div id="logs">
+			<div class="terminal-container">
+				<b>Events</b>
+				<div id="event_log" class="terminal"></div>
+			</div>
+			<div class="terminal-container">
+					<b>Notification channel</b>
+					<div id="notification_channel" class="terminal"></div>
+			</div>
+			<div class="terminal-container">
+				<b>Device Events</b>
+				<div id="device_data_events" class="terminal"></div>
+			</div>
+		</div>
+		
+    </body>
+</html>

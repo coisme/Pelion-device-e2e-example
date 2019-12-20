@@ -1,0 +1,42 @@
+div#main {
+    position: absolute;
+    width: 100%;
+    height: 70%;
+    overflow-y: scroll;
+    top: 0%;
+}
+
+div#main img#logo {
+    padding: 5px;
+    height: 25px;
+    background-color: black;
+}
+
+div#logs {
+    position: absolute;
+    width: 100%;
+    height: 30%;
+    overflow-y: scroll;
+    bottom: 0%;
+    border-top-style: solid;
+    border-top-color: lightgray;
+    background-color: white;
+}
+
+div.terminal-container {
+    float: left;
+    width: 33%;
+    height: 100%;
+    left: 0%;
+}
+
+div.terminal {
+    width: 100%;
+    height: 90%;
+    padding: 2px;
+    overflow-y: scroll;
+    word-break: break-all;
+    background-color: black;
+    color: white;
+    font-size: small;
+}
