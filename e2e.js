@@ -5,7 +5,7 @@ function createWebSocketNotificationChannel() {
             if (this.readyState == XMLHttpRequest.DONE) {
                 if(this.status == 200 || this.status == 201) {
                     EventLog(this.status + " " + this.statusText + " ");
-                    EventLog("WebSocket notification channel registered.");
+                    EventLog("WebSocket notification channel created.");
                 } else {
                     EventLogError(this.status + " " + this.statusText);
                 }

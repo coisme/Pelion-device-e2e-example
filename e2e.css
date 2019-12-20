@@ -40,3 +40,11 @@ div.terminal {
     color: white;
     font-size: small;
 }
+
+button {
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background-color: gray;
+}

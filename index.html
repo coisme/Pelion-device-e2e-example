@@ -19,13 +19,13 @@
             <p>
                 Please input your API key here. (API key starts from ak_...)
                 <div>
-                    <input id="apikey" type="text" size="80" value="" />
+                    <input id="apikey" type="text" size="80" value="" placeholder="ak_..."/>
                 </div>
             </p>
 
             <h2>Open event notification channel and receive event from device</h2>
             <p>
-                To open the WebSocket channel, follow these steps. Detailed description on this flow is
+                To use the WebSocket channel, follow these steps. Detailed description on this flow is
                 <a href="https://www.pelion.com/docs/device-management/current/integrate-web-app/event-notification.html#websocket-interface">here</a>.
                 Note that you can open only 1 notification channel per API key.
             </p>
@@ -37,14 +37,17 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#registerWebsocket">PUT /v2/notification/websocket</a>.
                 <div>
                     <button type="button" onclick="createWebSocketNotificationChannel()"> Create websocket notification channel</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L1-L17">Code</a>
                 </div>
             </p>
             
             <h3>Connect WebSocket notification channel</h3>
             <p>
-                <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#registerWebsocket">API Doc: websocket notification channel.</a>
+                After creating your WebSocket notification channel, connect to it with
+                <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#connectWebsocket">GET /v2/websocket-connect</a>.
                 <div>
                     <button type="button" onclick="connectWebSocket()"> Open WebSocket to the channel</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L19-L89">Code</a>
                 </div>
             </p>
             <p>
@@ -53,15 +56,19 @@
 
             <h2>Connect your device</h2>
             <p>
-                Connect device  to the system plaplapla.
-                You should see <b>reqistration</b> or <b>reg-update</b> event in the <b>Events Log</b> below.
+                Turn on your device and connect to Pelion.
+                You should see <b>reqistration</b> or <b>reg-update</b> event in the <b>Notification Channel</b> below.
             </p>
             <h3>Choose your device</h3>
             <p>
+                First, click <b>Get Registered Devices</b> button below to get the devices which state is <b>registered</b>.
+                <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-directory.html#deviceList">GET /v3/devices</a> is used to get device list.
                 <div>
-                    <button type="button" onclick="getRegisteredDevices()">Get Registered Devices</button><br />
+                    <button type="button" onclick="getRegisteredDevices()">Get Registered Devices</button> 
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L91-L113">Code</a>
+                    <br />
                     <select id="deviceSelector">
-                        <option value="00000000000000000000000000000000">Click the button above to get registered devices</option>
+                        <option value="00000000000000000000000000000000">Click the above button to get registered devices</option>
                     </select>
                 </div>
             </p>
@@ -78,6 +85,7 @@
                 <div>
                     Pattern: <input id="blinkPattern" type="text" size="30" value="500:1000:500:1000" /><br />
                     <button type="button" onClick="writeResource( getDeviceId(), '/3201/0/5853', document.getElementById('blinkPattern').value)">Write resource to "pattern_resource" (/3201/0/5853)</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L115-L133">Code</a>
                 </div>
             </p>
             <p>
@@ -94,6 +102,7 @@
                 For example, let's read resource Digital Input Counter /3200/0/5501.
                 <div>
                     <button type="button" onClick="readResource( getDeviceId(), '/3200/0/5501')">Read resource Digital Input Counter (/3200/0/5501)</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L135-L152">Code</a>
                 </div>
             </p>
             <h3>Note for cache</h3>
@@ -120,6 +129,7 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#deleteResourceSubscription">DELETE /v2/subscriptions/{device-id}/{resourcePath}</a>.
                 <div>
                     <button type="button" onClick="unsubscribeResource( getDeviceId(), '/3200/0/5501')">Unsubscribe to Digital Input Counter (/3200/0/5501)</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L154-L168">Code</a>
                 </div>
             </p>
 
@@ -188,7 +198,7 @@
                 <div id="event_log" class="terminal"></div>
             </div>
             <div class="terminal-container">
-                    <b>Notification channel</b>
+                    <b>Notification Channel</b>
                     <div id="notification_channel" class="terminal"></div>
             </div>
             <div class="terminal-container">
