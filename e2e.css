@@ -71,6 +71,7 @@ div#main div.operation {
     background-color: lightblue;
     margin-right: 20%;
     padding: 5px;
+    font-size: small;
 }
 
 div.terminal-container {

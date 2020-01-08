@@ -25,6 +25,19 @@
                 </p>
             </div>
 
+
+
+            <h1>Prerequisites</h1>
+            <p>
+                To go through this example, you need these.
+                <ul>
+                    <li>Pelion Device Management API key (<a href="https://www.pelion.com/docs/device-management/current/user-account/api-keys.html#creating-a-key">Get API key</a>)</li>
+                    <li>Device running <a href="https://github.com/ARMmbed/mbed-cloud-client-example">mbed-cloud-client-example</a> or <a href="https://github.com/ARMmbed/mbed-os-example-pelion">mbed-os-example-pelion</a></li>
+                </ul>
+            </p>
+
+
+
             <h1>API key</h1>
             <p>
                 Please input your API key here (API key starts from ak_...). About API key and how to get it, please refer
@@ -55,8 +68,8 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#registerWebsocket">PUT /v2/notification/websocket</a>.
             </p>
             <div class="operation">
-                <button type="button" onclick="createWebSocketNotificationChannel()"> Create websocket notification channel</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L1-L17">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=0:18&footer=minimal"></script>
+                <button type="button" onclick="createWebSocketNotificationChannel()">Run this code</button>
             </div>
             
             <h2>Connect WebSocket notification channel</h2>
@@ -65,8 +78,8 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#connectWebsocket">GET /v2/websocket-connect</a>.
             </p>
             <div class="operation">
-                <button type="button" onclick="connectWebSocket()"> Open WebSocket to the channel</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L19-L89">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=19:90&footer=minimal"></script>
+                <button type="button" onclick="connectWebSocket()">Run this code</button>
             </div>
             <p>
                 Now you have a event notification channel open. You will receive the device lifitime events (Register, Register-Update and Expire) by default.
@@ -76,7 +89,7 @@
 
             <h1>Connect your device</h1>
             <p>
-                Turn on your device and connect to Pelion.
+                Turn on or reset your device and connect to Pelion.
                 You should see <b>reqistration</b> or <b>reg-update</b> event in the <b>Notification Channel</b> below.
             </p>
             <h2>Choose your device</h2>
@@ -85,8 +98,8 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-directory.html#deviceList">GET /v3/devices</a> is used to get device list.
             </p>
             <div class="operation">
-                <button type="button" onclick="getRegisteredDevices()">Get Registered Devices</button> 
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L91-L113">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=91:115&footer=minimal"></script>
+                <button type="button" onclick="getRegisteredDevices()">Run this code</button>
             </div>
             <p>
                 When you click the button above, you'll see the registered device(s) in the box below. Choose your target device.
@@ -110,9 +123,9 @@
                 The default value of this resource is "500:500:500:500". We change this to "500:1000:500:1000". This value must be encoded into Base64, which is done in our script.
             </p>
             <div class="operation">
-                    Pattern: <input id="blinkPattern" type="text" size="30" value="500:1000:500:1000" /><br />
-                    <button type="button" onClick="writeResource( getDeviceId(), '/3201/0/5853', document.getElementById('blinkPattern').value)">Write resource to "pattern_resource" (/3201/0/5853)</button>
-                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L115-L133">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=116:136&footer=minimal"></script>
+                Pattern: <input id="blinkPattern" type="text" size="30" value="500:1000:500:1000" /><br />
+                <button type="button" onclick="writeResource( getDeviceId(), '/3201/0/5853', document.getElementById('blinkPattern').value)">Run this code</button>
             </div>
             <p>
                 You'll get an async-response on your notification channel when the device accepted the request. In addition, the user LED on the device will blink with the specified pattern, 500 ms, 1000 ms, 500 ms, 1000 ms.
@@ -130,12 +143,12 @@
                 For example, let's read resource Digital Input Counter /3200/0/5501.
             </p>
             <div class="operation">
-                <button type="button" onClick="readResource( getDeviceId(), '/3200/0/5501')">Read resource Digital Input Counter (/3200/0/5501)</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L135-L152">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=137:156&footer=minimal"></script>
+                <button type="button" onclick="readResource( getDeviceId(), '/3200/0/5501')">Run this code</button>
             </div>
 
-            <h2>Note for cache</h2>
             <p>
+                <b>Note for cache</b><br/>
                 If max-age value is set by the device's client, reported values from the device is cached for max-age:
                 <a href="https://www.pelion.com/docs/device-management/current/connecting/device-guidelines.html#resource-cache">https://www.pelion.com/docs/device-management/current/connecting/device-guidelines.html#resource-cache</a>
                 If the cached value is valid, it will be returned as the response. If your webapp needs to get the current value from the device, not cached value, max-age must be set 0 (default is 0) at the device client.
@@ -154,8 +167,8 @@
                 For example, let's subscribe Digital Input Counter /3200/0/5501 resource.
             </p>
             <div class="operation">
-                <button type="button" onClick="subscribeResource( getDeviceId(), '/3200/0/5501')">Subscribe to Digital Input Counter (/3200/0/5501)</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L154-L168">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=157:173&footer=minimal"></script>
+                <button type="button" onclick="subscribeResource( getDeviceId(), '/3200/0/5501')">Run this code</button>
             </div>
             <p>
                 You will receive an async response and followed by notifications for resource change. 
@@ -167,8 +180,8 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#deleteResourceSubscription">DELETE /v2/subscriptions/{device-id}/{resourcePath}</a>.
             </p>
             <div class="operation">
-                <button type="button" onClick="unsubscribeResource( getDeviceId(), '/3200/0/5501')">Unsubscribe to Digital Input Counter (/3200/0/5501)</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L170-L184">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=174:190&footer=minimal"></script>
+                <button type="button" onclick="unsubscribeResource( getDeviceId(), '/3200/0/5501')">Run this code</button>
             </div>
 
 
@@ -193,8 +206,8 @@
                 when device registers or does register update.
             </p>
             <div class="operation">
-                <button type="button" onClick="presubscribe( getDeviceId(),'/3200/0/5501')">Presubscribe /3200/0/5501</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L186-L203">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=191:211&footer=minimal"></script>
+                <button type="button" onclick="presubscribe( getDeviceId(),'/3200/0/5501')">Run this code</button>
             </div>
             <p>
                 Try to reboot your device. The resource /3200/0/5501 will be subscribed automatically and you'll see notification on your notification channel.
@@ -205,8 +218,8 @@
                 To unsubscribe presubscription, use <a href="">DELETE /v2/subscriptions</a>.
             </p>
             <div class="operation">
-                <button type="button" onClick="unpresubscribe()">Unsubscribe presubscription</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L205-L219">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=211:228&footer=minimal"></script>
+                <button type="button" onclick="unpresubscribe()">Run this code</button>
             </div>
 
 
@@ -221,8 +234,8 @@
                 Note that you need to subscribe /3200/0/5501 besides setting a notification rule.
             </p>
             <div class="operation">
-                <button type="button" onClick="subscribeResource( getDeviceId(), '/3200/0/5501')">Subscribe to Digital Input Counter (/3200/0/5501)</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L154-L168">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=157:173&footer=minimal"></script>
+                <button type="button" onclick="subscribeResource( getDeviceId(), '/3200/0/5501')">Run this code</button>
             </div>
 
             <h2>Set notification rule</h2>
@@ -239,8 +252,8 @@
                 Specify the resource path in uri field with pmin=60 parameter. This is done in the script. 
             </p>
             <div class="operation">
-                <button type="button" onClick="setFilterParameter( getDeviceId(), '/3200/0/5501', 'pmin=60')">Set pmin=60 to /3200/0/5501 on the selected device</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L221-L238">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=228:248&footer=minimal"></script>
+                <button type="button" onclick="setFilterParameter( getDeviceId(), '/3200/0/5501', 'pmin=60')">Run this code</button>
             </div>
 
             <h2>Unsubscribe</h2>
@@ -249,21 +262,21 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#deleteResourceSubscription">DELETE /v2/subscriptions/{device-id}/{resourcePath}</a>.
             </p>
             <div class="operation">
-                <button type="button" onClick="unsubscribeResource( getDeviceId(), '/3200/0/5501')">Unsubscribe to Digital Input Counter (/3200/0/5501)</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L170-L184">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=174:190&footer=minimal"></script>
+                <button type="button" onclick="unsubscribeResource( getDeviceId(), '/3200/0/5501')">Run this code</button>
             </div>
 
             
 
             <h1>Delete WebSocket notification channel</h1>
             <p>
-                In the end, delete the WebSocket notification channel bound to the API key using
+                In the end, delete the WebSocket notification channel bound to the API key. Use
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#deleteWebsocket">DELETE /v2/notification/websocket</a>.
                 This is required to change the channel from websocket to another type.
             </p>
             <div class="operation">
-                <button type="button" onClick="deleteWebSocketNotificationChannel()">Delete WebSocket notification channel</button>
-                <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L240-L255">Code</a>
+                <script src="https://gist-it.appspot.com/github/coisme/Pelion-device-e2e-example/blob/v0.1.0/e2e.js?slice=248:265&footer=minimal"></script>
+                <button type="button" onclick="deleteWebSocketNotificationChannel()">Run this code</button>
             </div>
             <p>
                 End-of-Contents

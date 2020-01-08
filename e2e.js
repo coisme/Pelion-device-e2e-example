@@ -204,7 +204,6 @@ function presubscribe( deviceId, resourcePath) {
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
     xhttp.setRequestHeader('Content-type', 'application/json');
     // Create post data
-//    let postdata = '[{"endpoint-name":"' + deviceId + '","resource-path":"[' + resourcePath + ']"}]';
     let postdata = '[{"endpoint-name":"' + deviceId + '","resource-path":["' + resourcePath + '"]}]';
     EventLog("Presubscribing to " + resourcePath + " in " + deviceId + "..");
     xhttp.send(postdata);
@@ -302,7 +301,7 @@ function EventLogError(text) {
 
 function NotificationChannelLog(text) {
     let obj = document.getElementById("notification_channel");
-    obj.innerHTML += text + "<br />";
+    obj.innerHTML += getTimeHtml() + " " + text + "<br />";
     obj.scrollTop = obj.scrollHeight;
 }
 
