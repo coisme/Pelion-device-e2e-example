@@ -19,7 +19,9 @@
             <p>
                 Please input your API key here. (API key starts from ak_...)
                 <div>
-                    <input id="apikey" type="text" size="80" value="" placeholder="ak_..."/>
+                    <input id="apikey" type="text" size="80" value="" placeholder="ak_..."/><br/>
+                    <input id="storeApiKey" type="checkbox" name="storeApiKey" onclick="handleApiKeyCheckbox()"/>
+                    <label for="storeApiKey">Store API Key in Cookie (Use only on your private browser)</label>
                 </div>
             </p>
 
@@ -121,6 +123,7 @@
                 For example, let's subscribe Digital Input Counter /3200/0/5501 resource.
                 <div>
                     <button type="button" onClick="subscribeResource( getDeviceId(), '/3200/0/5501')">Subscribe to Digital Input Counter (/3200/0/5501)</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L154-L168">Code</a>
                 </div>
                 You will receive an async response and followed by notifications for resource change. 
             </p>
@@ -129,7 +132,7 @@
                 <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#deleteResourceSubscription">DELETE /v2/subscriptions/{device-id}/{resourcePath}</a>.
                 <div>
                     <button type="button" onClick="unsubscribeResource( getDeviceId(), '/3200/0/5501')">Unsubscribe to Digital Input Counter (/3200/0/5501)</button>
-                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/541abb7ce1ddaef5ef3508e52bad9a8beaa37e8c/e2e.js#L154-L168">Code</a>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L170-L184">Code</a>
                 </div>
             </p>
 
@@ -151,6 +154,7 @@
                 when device registers or does register update.
                 <div>
                     <button type="button" onClick="presubscribe( getDeviceId(), '/3200/0/5501')">Presubscribe /3200/0/5501 on the selected device</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L186-L203">Code</a>
                 </div>
             </p>
             <p>
@@ -160,6 +164,7 @@
                 To unsubscribe presubscription, use <a href="">DELETE /v2/subscriptions</a>.
                 <div>
                     <button type="button" onClick="unpresubscribe()">Unsubscribe presubscription</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L205-L219">Code</a>
                 </div>
             </p>
 
@@ -180,14 +185,18 @@
                 Specify the resource path in uri field with pmin=60 parameter. This is done in the script. 
                 <div>
                     <button type="button" onClick="setFilterParameter( getDeviceId(), '/3200/0/5501', 'pmin=60')">Set pmin=60 to /3200/0/5501 on the selected device</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L221-L238">Code</a>
                 </div>
             </p>
             
             <h2>Delete WebSocket notification channel</h2>
             <p>
-                In the end, delete the WebSocket notification channel bound to the API key. This is required to change the channel from websocket to another type.
+                In the end, delete the WebSocket notification channel bound to the API key using
+                <a href="https://www.pelion.com/docs/device-management/current/service-api-references/device-management-connect.html#deleteWebsocket">DELETE /v2/notification/websocket</a>.
+                This is required to change the channel from websocket to another type.
                 <div>
                     <button type="button" onClick="deleteWebSocketNotificationChannel()">Delete WebSocket notification channel</button>
+                    <a href="https://github.com/coisme/Pelion-device-e2e-example/blob/07bcdff68055d4805f1e2d931399440db940d941/e2e.js#L240-L255">Code</a>
                 </div>
             </p>
         </div>

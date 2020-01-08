@@ -298,6 +298,61 @@ function ClearEventlog() {
     document.getElementById("event_log").innerHTML = null;
 }
 
+/*
+ * API key store handling functions
+ */
+
+// Save API key in Cookie
+function saveApiKey() {
+    let ageInSeconds = 60 * 60 * 24 * 30; // 30 days
+    let value = document.getElementById("apikey").value;
+    document.cookie = "apiKey=" + encodeURIComponent(value) + ";max-age=" + ageInSeconds;
+}
+
+// Delete API key from Cookie
+function deleteApiKey() {
+    document.cookie = "apiKey=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+}
+
+function handleApiKeyCheckbox() {
+    let checkbox = document.getElementById("storeApiKey");
+    if (checkbox.checked == true) {
+        saveApiKey();
+        console.log('API key saved.');
+    } else {
+        deleteApiKey();
+        console.log('API key deleted.');
+    }
+}
+
+// Check if API key exists in Cookie and set it if exists.
+function checkApiKey() {
+    if (
+        document.cookie.split(';').filter(
+            function(item) {
+                return (item.indexOf('apiKey=') >= 0)
+            }
+        ).length
+    ) {
+        console.log('API key found in Cookie.');
+        // Set API key into the text box
+        let cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)apiKey\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        document.getElementById("apikey").value = decodeURIComponent(cookieValue);
+        // Check the checkbox
+        document.getElementById("storeApiKey").checked = true;
+    } else {
+        console.log("API key not found in Cookie.");
+    }
+}
+
+// Load API key
+window.addEventListener('DOMContentLoaded', 
+    function() {
+        console.log("Checking API key in Cookie.");
+        checkApiKey();
+    }
+)
+
 // create_UUID()
 // from https://www.w3resource.com/javascript-exercises/javascript-math-exercise-23.php
 function create_UUID(){
