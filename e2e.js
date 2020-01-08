@@ -11,6 +11,7 @@ function createWebSocketNotificationChannel() {
                 }
             }
     };
+    EventLog("Creating WebSocket notification channel..");
     xhttp.open("PUT", "https://api.us-east-1.mbedcloud.com/v2/notification/websocket", true);
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
     xhttp.send();
@@ -107,6 +108,7 @@ function getRegisteredDevices() {
             }
         }
     };
+    EventLog('Getting registered devices..');
     xhttp.open("GET", "https://api.us-east-1.mbedcloud.com/v3/devices?filter=state%3Dregistered", true);
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
     xhttp.send();
@@ -129,6 +131,7 @@ function writeResource( deviceId, resourcePath, value) {
     // Create post data
     let blinkPattern = document.getElementById("blinkPattern").innerText;
     let postdata = '{"method":"PUT","uri":"' + resourcePath + '", "accept": "text/plain", "content-type": "text/plain", "payload-b64": "' + btoa(value) + '"}';
+    EventLog("Writing resource " + resourcePath + " in " + deviceId + "..");
     xhttp.send(postdata);
 }
 
@@ -148,6 +151,7 @@ function readResource( deviceId, resourcePath) {
     xhttp.setRequestHeader('Content-type', 'application/json');
     // Create post data
     let postdata = '{"method":"GET","uri":"' + resourcePath + '"}';
+    EventLog("Reading resource " + resourcePath + " in " + deviceId + "..");
     xhttp.send(postdata);
 }
 
@@ -164,6 +168,7 @@ function subscribeResource( deviceId, resourcePath) {
     };
     xhttp.open("PUT", "https://api.us-east-1.mbedcloud.com/v2/subscriptions/" + deviceId + resourcePath, true);
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    EventLog("Subscribing to " + resourcePath + " in " + deviceId + "..");
     xhttp.send();
 }
 
@@ -180,6 +185,7 @@ function unsubscribeResource( deviceId, resourcePath) {
     };
     xhttp.open("DELETE", "https://api.us-east-1.mbedcloud.com/v2/subscriptions/" + deviceId + resourcePath, true);
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    EventLog("Unsubscribing to " + resourcePath + " in " + deviceId + "..");
     xhttp.send();
 }
 
@@ -198,7 +204,9 @@ function presubscribe( deviceId, resourcePath) {
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
     xhttp.setRequestHeader('Content-type', 'application/json');
     // Create post data
-    let postdata = '[{"endpoint-name":"' + deviceId + '","resource-path":"' + resourcePath + '"}]';
+//    let postdata = '[{"endpoint-name":"' + deviceId + '","resource-path":"[' + resourcePath + ']"}]';
+    let postdata = '[{"endpoint-name":"' + deviceId + '","resource-path":["' + resourcePath + '"]}]';
+    EventLog("Presubscribing to " + resourcePath + " in " + deviceId + "..");
     xhttp.send(postdata);
 }
 
@@ -213,8 +221,9 @@ function unpresubscribe() {
             }
         }
     };
-    xhttp.open("PUT", "https://api.us-east-1.mbedcloud.com/v2/subscriptions", true);
+    xhttp.open("DELETE", "https://api.us-east-1.mbedcloud.com/v2/subscriptions", true);
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    EventLog("Unpresubscribing..");
     xhttp.send();
 }
 
@@ -234,6 +243,7 @@ function setFilterParameter( deviceId, resourcePath, param) {
     xhttp.setRequestHeader('Content-type', 'application/json');
     // Create post data
     let postdata = '{"method":"PUT","uri":"' + resourcePath + '?' + param + '"}';
+    EventLog("Setting filter parameter " + param + " to " + resourcePath + " in " + deviceId + "..");
     xhttp.send(postdata);
 }
 
@@ -250,8 +260,8 @@ function deleteWebSocketNotificationChannel() {
     };
     xhttp.open("DELETE", "https://api.us-east-1.mbedcloud.com/v2/notification/websocket", true);
     xhttp.setRequestHeader('Authorization', 'Bearer ' + getApiKey());
+    EventLog("Deleting notification channel..");
     xhttp.send();
-
 }
 
 function getDeviceId() {
@@ -270,15 +280,23 @@ function getApiKey() {
     return key;
 }
 
+function getTimeHtml() {
+    let d = new Date();
+    let hour = ('00' + d.getHours()).slice(-2);
+    let min = ('00' + d.getMinutes()).slice(-2);
+    let sec = ('00' + d.getSeconds()).slice(-2);
+    return '<font color="gray">' + hour + ":" + min + ":" + sec + '</font>';
+}
+
 function EventLog(text) {
     let obj = document.getElementById("event_log");
-    obj.innerHTML += text + "<br />";
+    obj.innerHTML += getTimeHtml() + " " + text + "<br />";
     obj.scrollTop = obj.scrollHeight;
 }
 
 function EventLogError(text) {
     let obj = document.getElementById("event_log");
-    obj.innerHTML += '<font color="red">' + text + "</font><br />";
+    obj.innerHTML += getTimeHtml() + " " + '<font color="red">' + text + "</font><br />";
     obj.scrollTop = obj.scrollHeight;    
 }
 
@@ -294,8 +312,10 @@ function DeviceDataEventsLog(text) {
     obj.scrollTop = obj.scrollHeight;
 }
 
-function ClearEventlog() {
+function ClearEventLog() {
     document.getElementById("event_log").innerHTML = null;
+    document.getElementById("notification_channel").innerHTML = null;
+    document.getElementById("device_data_events").innerHTML = null;
 }
 
 /*
@@ -305,8 +325,12 @@ function ClearEventlog() {
 // Save API key in Cookie
 function saveApiKey() {
     let ageInSeconds = 60 * 60 * 24 * 30; // 30 days
-    let value = document.getElementById("apikey").value;
-    document.cookie = "apiKey=" + encodeURIComponent(value) + ";max-age=" + ageInSeconds;
+    let value = getApiKey();
+    if (value != "") {
+        document.cookie = "apiKey=" + encodeURIComponent(value) + ";max-age=" + ageInSeconds;
+        return true;
+    }
+    return false;
 }
 
 // Delete API key from Cookie
@@ -317,8 +341,9 @@ function deleteApiKey() {
 function handleApiKeyCheckbox() {
     let checkbox = document.getElementById("storeApiKey");
     if (checkbox.checked == true) {
-        saveApiKey();
-        console.log('API key saved.');
+        if(saveApiKey()) {
+            console.log('API key saved.');
+        }
     } else {
         deleteApiKey();
         console.log('API key deleted.');
