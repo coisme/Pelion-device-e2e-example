@@ -1,6 +1,6 @@
-# Pelion Device Management Service API E2E example for device communication
+# Service API example for device communication
 
-This example covers how to communicate with device through Pelion Device Management Service API.
+This example covers how to communicate with your IoT device through Pelion Device Management Service API.
 
 You can try either:
 * Access [this test Site](https://coisme.github.io/Pelion-device-e2e-example/) hosted on GitHub Pages
